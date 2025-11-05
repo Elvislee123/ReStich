@@ -1,126 +1,111 @@
-<!doctype html>
+  <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Tailor Board — Restich</title>
-  <style>
-    :root{
-      --bg:#0b0f14; --panel:#101720; --muted:#1f2a37; --soft:#0e141b; --text:#e8eef6; --sub:#b6c2d1; --accent:#7dd3fc; --ok:#34d399; --warn:#fbbf24; --bad:#fb7185; --ready:#60a5fa;
-    }
-    *{box-sizing:border-box}
-    body{margin:0;background:linear-gradient(180deg,var(--bg),#0a1118);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
-    header{position:sticky;top:0;z-index:5;background:rgba(10,15,20,.85);backdrop-filter:blur(8px);border-bottom:1px solid var(--muted)}
-    .wrap{max-width:1200px;margin:0 auto;padding:12px 16px}
-    h1{margin:0;font-size:20px}
-    .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-    input,select,button{border-radius:10px;border:1px solid var(--muted);background:var(--soft);color:var(--text);padding:8px 10px;font-size:14px}
-    button{cursor:pointer}
-    button.primary{background:var(--accent);border:0;color:#06202b;font-weight:700}
-    main{padding:18px 0}
-    .board{display:grid;grid-template-columns:repeat(4,minmax(260px,1fr));gap:12px;align-items:start}
-    .col{background:var(--panel);border:1px solid var(--muted);border-radius:14px;min-height:320px;display:flex;flex-direction:column}
-    .col h3{margin:0;padding:12px 14px;border-bottom:1px solid var(--muted);font-size:14px;letter-spacing:.3px}
-    .count{opacity:.7;font-weight:400}
-    .lane{padding:12px;display:grid;gap:10px;min-height:220px}
-    .card{background:#0c131b;border:1px solid var(--muted);border-radius:12px;padding:10px;display:grid;gap:6px}
-    .title{display:flex;align-items:center;gap:8px}
-    .tag{font-size:11px;border:1px solid var(--muted);border-radius:999px;padding:2px 8px;opacity:.9}
-    .prio-Hot{background:#3b0b0b;color:#fecaca;border-color:#7f1d1d}
-    .prio-High{background:#3b2906;color:#fde68a;border-color:#7c5f05}
-    .prio-Normal{background:#0a2a1b;color:#bbf7d0;border-color:#14532d}
-    .deadline{font-size:12px;opacity:.85}
-    .meta{display:flex;flex-wrap:wrap;gap:6px;font-size:12px;opacity:.9}
-    .small{font-size:12px;opacity:.8}
-    .ghost{background:transparent}
-    .footer{opacity:.65;font-size:12px;padding:24px 0}
-    .toast{position:fixed;right:16px;bottom:16px;background:var(--panel);border:1px solid var(--muted);padding:10px 12px;border-radius:10px}
-    .hint{font-size:12px;color:var(--sub)}
-    .dragging{opacity:.6}
-    .drop{outline:2px dashed var(--accent);outline-offset:-8px}
-    @media (max-width: 980px){ .board{grid-template-columns:repeat(2, minmax(260px,1fr));} }
-    @media (max-width: 600px){ .board{grid-template-columns:1fr;} }
-  </style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>Tailor Board — Restich</title>
+<style>
+  :root{
+    --bg:#0b0f14; --panel:#101720; --muted:#1f2a37; --soft:#0e141b; --text:#e8eef6; --sub:#b6c2d1; --accent:#7dd3fc;
+    --touch:48px; /* min touch target */
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:linear-gradient(180deg,var(--bg),#0a1118);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+  header{position:sticky;top:0;z-index:5;background:rgba(10,15,20,.85);backdrop-filter:blur(8px);border-bottom:1px solid var(--muted)}
+  .wrap{max-width:1200px;margin:0 auto;padding:12px 16px}
+  h1{margin:0;font-size:22px}
+  .hint{font-size:12px;color:var(--sub)}
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  input,button,select{border-radius:12px;border:1px solid var(--muted);background:var(--soft);color:var(--text);padding:12px 14px;font-size:16px;min-height:var(--touch)}
+  button{cursor:pointer} button.primary{background:var(--accent);border:0;color:#06202b;font-weight:700}
+  main{padding:18px 0}
+  .board{display:grid;grid-template-columns:repeat(4,minmax(280px,1fr));gap:14px;align-items:start}
+  .col{background:var(--panel);border:1px solid var(--muted);border-radius:16px;min-height:340px;display:flex;flex-direction:column;overflow:hidden}
+  .col h3{margin:0;padding:12px 14px;border-bottom:1px solid var(--muted);font-size:15px;letter-spacing:.3px}
+  .count{opacity:.7;font-weight:400}
+  .lane{padding:12px;display:grid;gap:12px;min-height:220px;overflow:auto;touch-action:pan-y}
+  .card{background:#0c131b;border:1px solid var(--muted);border-radius:14px;padding:12px;display:grid;gap:8px}
+  .title{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .tag{font-size:12px;border:1px solid var(--muted);border-radius:999px;padding:4px 10px;opacity:.95}
+  .prio-Hot{background:#3b0b0b;color:#fecaca;border-color:#7f1d1d}
+  .prio-High{background:#3b2906;color:#fde68a;border-color:#7c5f05}
+  .prio-Normal{background:#0a2a1b;color:#bbf7d0;border-color:#14532d}
+  .deadline{font-size:13px;opacity:.9}
+  .meta{display:flex;flex-wrap:wrap;gap:8px;font-size:13px;opacity:.95}
+  .small{font-size:14px;opacity:.95;line-height:1.35}
+  .actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .select{appearance:none}
+  .toast{position:fixed;right:16px;bottom:16px;background:var(--panel);border:1px solid var(--muted);padding:12px 14px;border-radius:12px;display:none}
+  .dragging{opacity:.6} .drop{outline:2px dashed var(--accent);outline-offset:-8px}
+  @media (max-width: 1100px){ .board{grid-template-columns:repeat(3,minmax(280px,1fr));} }
+  @media (max-width: 900px){ .board{grid-template-columns:repeat(2,minmax(260px,1fr));} h1{font-size:20px} }
+  @media (max-width: 600px){ .board{grid-template-columns:1fr;} header .row input{flex:1} }
+</style>
 </head>
 <body>
-  <header>
-    <div class="wrap row">
-      <div style="flex:1 1 auto">
-        <h1>Tailor Board — Restich</h1>
-        <div class="hint">Drag cards between columns to update <strong>Status</strong>. Data refreshes every 10 minutes (and on demand).</div>
-      </div>
-      <div class="row" role="group" aria-label="Controls">
-        <input id="tailorId" placeholder="Filter by Tailor ID (local only)" />
-        <button id="btnSaveFilter">Save</button>
-        <button id="btnRefresh" class="primary">Refresh</button>
-      </div>
+<header>
+  <div class="wrap row">
+    <div style="flex:1 1 auto">
+      <h1>Tailor Board — Restich</h1>
+      <div class="hint">Tablet-optimized. Drag between lanes (if supported) or use “Move”. Auto-refresh every 10 min.</div>
     </div>
-  </header>
+    <div class="row" role="group">
+      <input id="tailorId" placeholder="Filter by Tailor ID"/>
+      <button id="btnSaveFilter">Save</button>
+      <button id="btnRefresh" class="primary">Refresh</button>
+    </div>
+  </div>
+</header>
 
-  <main class="wrap">
-    <section class="board" id="board" aria-live="polite">
-      <!-- Columns injected by JS -->
-    </section>
-    <div class="footer">Frontend is static (GitHub Pages). Data comes from a secure proxy to Airtable. No secrets in the browser. Auto-refresh: <span id="nextIn">–</span>.</div>
-  </main>
+<main class="wrap">
+  <section class="board" id="board"></section>
+  <div style="opacity:.7;font-size:13px;padding:20px 2px">Next auto refresh in <span id="nextIn">—</span>.</div>
+</main>
 
-  <div id="toast" class="toast" style="display:none"></div>
+<div id="toast" class="toast"></div>
 
 <script>
-/**
- * === CONFIG ===
- * This page expects a tiny secure proxy (Vercel/Netlify/Cloudflare Worker)
- * so your Airtable token never hits the browser.
- *
- * Required proxy endpoints (adjust below if yours differs):
- *  GET   PROXY_BASE + "/list?table=Tailor%20Orders&filter=ENCODED_FORMULA"
- *  PATCH PROXY_BASE + "/update?id=recXXXX"  body: { fields: { Status: "Ready for pickup" } }
- */
+/* ====== CONFIG (update PROXY_BASE only) ====== */
 const CONFIG = {
-  PROXY_BASE: "https://restich.workers.dev",   // ← CHANGE THIS
-  TABLE_NAME: "Tailor Orders",                    // Airtable table with tailor-facing data
-  POLL_MS: 10 * 60 * 1000,                         // 10 minutes
+  PROXY_BASE: "https://restich-airtable-proxy.restich.workers.dev",
+  TABLE_NAME: "Tailor Orders",
+  POLL_MS: 10 * 60 * 1000,
   COLUMNS: [
     { key: "Queued", label: "Queued" },
     { key: "In Progress", label: "In Progress" },
     { key: "Ready for pickup", label: "Ready for pickup" },
     { key: "Picked up", label: "Picked up" },
   ],
-  // Field names in Airtable (Tailor Order scope only)
   FIELDS: {
-    id: "id",                      // Airtable record id (provided by API)
-    tailorOrderId: "Tailor Order ID",
-    clientOrderId: "Client Order ID",
-    clientName: "Client name",
+    id: "id",
+    clientName: "Client Name",
     garment: "Garment Type",
-    details: "Repair Details",
-    tailorId: "Tailor ID",
-    priority: "Priority",         // e.g., Hot / High / Normal
-    cost: "Tailor Cost",
-    deadline: "Order Deadline",
-    dropped: "Dropped off in store",
+    details: "Repair details",
+    priority: "Priority",
+    fee: "Tailor Fee",
     status: "Status",
-    ready: "Ready for pickup",
-    picked: "Picked up",
+    tailorStatus: "Tailor Status",
+    dropped: "Drop-off in store",
+    deadline: "Order Deadline",
+    ready: "Ready for Pickup",
+    picked: "Picked Up"
   }
 };
+/* ============================================= */
 
-const $ = (q, el=document) => el.querySelector(q);
-const $$ = (q, el=document) => [...el.querySelectorAll(q)];
+const $ = (q, el=document)=>el.querySelector(q);
+const $$ = (q, el=document)=>[...el.querySelectorAll(q)];
 const fmtDate = s => s ? new Date(s).toLocaleString() : "";
-const money = n => n==null?"":`£${Number(n).toFixed(2)}`;
+const money = v => (v==null || v==="") ? "" : `£${Number(v).toFixed(2)}`;
+let DATA=[], timer=null, nextTick=0, supportsDnD = 'draggable' in document.createElement('div');
 
-let DATA = [];         // last fetched records
-let timer = null;      // polling interval
-let nextTick = 0;      // next refresh timestamp
-
-// --- UI: build columns ---
 function buildBoard(){
-  const board = $('#board');
-  board.innerHTML = '';
+  const board = $('#board'); board.innerHTML='';
   CONFIG.COLUMNS.forEach(col=>{
     const el = document.createElement('div');
-    el.className = 'col'; el.dataset.status = col.key; el.innerHTML = `
+    el.className='col'; el.dataset.status=col.key;
+    el.innerHTML = `
       <h3>${col.label} <span class="count" data-count="${col.key}"></span></h3>
       <div class="lane" data-lane="${col.key}" aria-label="${col.label}" tabindex="0"></div>
     `;
@@ -128,124 +113,123 @@ function buildBoard(){
   });
 }
 
-// --- Fetch list (with optional Tailor ID filter) ---
 async function listOrders(){
-  const tailorId = localStorage.getItem('tailorId') || '';
-  const filterFormula = tailorId ? `{${CONFIG.FIELDS.tailorId}}='${tailorId}'` : '';
   const url = new URL(CONFIG.PROXY_BASE + '/list');
   url.searchParams.set('table', CONFIG.TABLE_NAME);
-  if (filterFormula) url.searchParams.set('filter', filterFormula);
-
-  const r = await fetch(url.toString(), { cache: 'no-store' });
-  if (!r.ok) throw new Error('List failed: '+r.status);
+  const tid = (localStorage.getItem('tailorId')||'').trim();
+  if(tid) url.searchParams.set('tailorId', tid);
+  const r = await fetch(url.toString(), { cache:'no-store' });
+  if(!r.ok) throw new Error('List failed '+r.status);
   const j = await r.json();
-  // Expect shape: { records: [{ id, fields: { ... } }] }
-  DATA = (j.records||[]).map(rec=> ({ id: rec.id, ...rec.fields }));
+  DATA = (j.records||[]).map(rec => ({ id: rec.id, ...rec.fields }));
   renderCards();
 }
 
 function renderCards(){
-  // clear lanes
-  CONFIG.COLUMNS.forEach(c=>{ const lane = document.querySelector(`[data-lane="${c.key}"]`); if(lane) lane.innerHTML=''; });
-
-  // group by status
-  const by = (DATA||[]).reduce((acc,rec)=>{ const s = rec[CONFIG.FIELDS.status] || 'Queued'; (acc[s]=acc[s]||[]).push(rec); return acc; }, {});
-
+  CONFIG.COLUMNS.forEach(c=>{ const lane=$(`[data-lane="${c.key}"]`); if(lane) lane.innerHTML=''; });
+  const F=CONFIG.FIELDS;
+  const by = (DATA||[]).reduce((acc,rec)=>{ const lane = rec[F.tailorStatus]||rec[F.status]||'Queued'; (acc[lane]=acc[lane]||[]).push(rec); return acc; }, {});
   CONFIG.COLUMNS.forEach(c=>{
-    const lane = document.querySelector(`[data-lane="${c.key}"]`);
-    const rows = (by[c.key]||[]);
+    const lane = $(`[data-lane="${c.key}"]`); const rows=(by[c.key]||[]);
     $(`[data-count="${c.key}"]`).textContent = `(${rows.length})`;
-    rows.sort((a,b)=> (a[CONFIG.FIELDS.priority]||'').localeCompare(b[CONFIG.FIELDS.priority]||''));
-    rows.forEach(rec=> lane.appendChild(card(rec)) );
+    rows.forEach(rec => lane.appendChild(card(rec)));
   });
-
-  enableDnD();
+  enableInteractions();
 }
 
 function card(rec){
-  const el = document.createElement('article');
-  el.className = 'card'; el.setAttribute('draggable','true'); el.dataset.id = rec.id;
-  const F = CONFIG.FIELDS; const pr = (rec[F.priority]||'').replace(/\s/g,'');
+  const F=CONFIG.FIELDS;
+  const el=document.createElement('article');
+  el.className='card'; el.dataset.id=rec.id;
+  if(supportsDnD) el.setAttribute('draggable','true');
+  const pr = ((rec[F.priority]||'Normal').trim()).replace(/\s/g,'');
+  const flags = [
+    rec[F.dropped] ? 'Dropped-off' : '',
+    rec[F.ready] ? 'Ready' : '',
+    rec[F.picked] ? 'Picked' : ''
+  ].filter(Boolean).map(t=>`<span class="tag">${t}</span>`).join('');
+  const moveSelect = `
+    <label class="hint" style="display:block;font-size:12px;margin-top:4px;margin-bottom:2px">Move</label>
+    <select class="select" data-move>
+      ${CONFIG.COLUMNS.map(c=>`<option value="${c.key}">${c.label}</option>`).join('')}
+    </select>
+  `;
   el.innerHTML = `
-    <div class="title"><strong>${rec[F.clientName]||'—'}</strong>
+    <div class="title">
+      <strong style="font-size:16px">${rec[F.clientName]||'—'}</strong>
       ${rec[F.priority]?`<span class="tag prio-${pr}">${rec[F.priority]}</span>`:''}
     </div>
     <div class="meta">
-      <span class="tag">${rec[F.garment]||''}</span>
-      ${rec[F.tailorOrderId]?`<span class="tag">TO# ${rec[F.tailorOrderId]}</span>`:''}
-      ${rec[F.clientOrderId]?`<span class="tag">CO# ${rec[F.clientOrderId]}</span>`:''}
-      ${rec[F.cost]!=null?`<span class="tag">${money(rec[F.cost])}</span>`:''}
+      ${rec[F.garment]?`<span class="tag">${rec[F.garment]}</span>`:''}
+      ${rec[F.fee]!=null && rec[F.fee]!==''?`<span class="tag">${money(rec[F.fee])}</span>`:''}
+      ${flags}
     </div>
     ${rec[F.details]?`<div class="small">${rec[F.details]}</div>`:''}
     ${rec[F.deadline]?`<div class="deadline">Deadline: ${fmtDate(rec[F.deadline])}</div>`:''}
+    <div class="actions">
+      ${moveSelect}
+    </div>
   `;
+  // preselect current lane in the Move picker
+  const current = rec[F.tailorStatus]||rec[F.status]||'Queued';
+  el.querySelector('[data-move]').value = current;
+  // Move action handler
+  el.querySelector('[data-move]').addEventListener('change', async (e)=>{
+    await updateStatus(rec.id, e.target.value);
+    await listOrders();
+  });
   return el;
 }
 
-// --- Drag & Drop status updates ---
-function enableDnD(){
-  $$('.card').forEach(c=>{
-    c.addEventListener('dragstart', e=>{ c.classList.add('dragging'); e.dataTransfer.setData('text/plain', c.dataset.id); });
-    c.addEventListener('dragend', ()=> c.classList.remove('dragging') );
-  });
-  $$('.lane').forEach(l=>{
-    l.addEventListener('dragover', e=>{ e.preventDefault(); l.classList.add('drop'); });
-    l.addEventListener('dragleave', ()=> l.classList.remove('drop'));
-    l.addEventListener('drop', async e=>{
-      e.preventDefault(); l.classList.remove('drop');
-      const id = e.dataTransfer.getData('text/plain');
-      const newStatus = l.dataset.lane;
-      await updateStatus(id, newStatus);
-      await listOrders();
+/* Drag & Drop (for browsers that support it) */
+function enableInteractions(){
+  if(supportsDnD){
+    $$('.card').forEach(c=>{
+      c.addEventListener('dragstart', e=>{ c.classList.add('dragging'); e.dataTransfer.setData('text/plain', c.dataset.id); });
+      c.addEventListener('dragend', ()=> c.classList.remove('dragging'));
     });
-  });
+    $$('.lane').forEach(l=>{
+      l.addEventListener('dragover', e=>{ e.preventDefault(); l.classList.add('drop'); });
+      l.addEventListener('dragleave', ()=> l.classList.remove('drop'));
+      l.addEventListener('drop', async e=>{
+        e.preventDefault(); l.classList.remove('drop');
+        const id = e.dataTransfer.getData('text/plain');
+        await updateStatus(id, l.dataset.lane);
+        await listOrders();
+      });
+    });
+  }
 }
 
-async function updateStatus(recordId, status){
+async function updateStatus(recordId, lane){
   const url = new URL(CONFIG.PROXY_BASE + '/update');
   url.searchParams.set('id', recordId);
-  const body = { fields: { [CONFIG.FIELDS.status]: status } };
+  const F=CONFIG.FIELDS;
+  const body = { fields: { [F.tailorStatus]: lane } };
   const r = await fetch(url.toString(), { method:'PATCH', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
-  if(!r.ok){ toast('Update failed'); throw new Error('Update failed'); }
+  if(!r.ok){ toast('Update failed'); throw new Error('update failed'); }
   toast('Status updated');
 }
 
-// --- Polling (10 minutes) ---
+/* Polling & controls */
 function startPolling(){
   clearInterval(timer);
-  const run = async ()=>{ try{ await listOrders(); nextTick = Date.now()+CONFIG.POLL_MS; tickCountdown(); } catch(e){ console.error(e); toast('Refresh failed'); } };
-  run();
-  timer = setInterval(run, CONFIG.POLL_MS);
+  const run = async ()=>{ try{ await listOrders(); nextTick=Date.now()+CONFIG.POLL_MS; tickCountdown(); } catch(e){ console.error(e); toast('Refresh failed'); } };
+  run(); timer=setInterval(run, CONFIG.POLL_MS);
 }
-
 function tickCountdown(){
-  function step(){
-    const s = Math.max(0, Math.floor((nextTick-Date.now())/1000));
-    const mm = String(Math.floor(s/60)).padStart(2,'0');
-    const ss = String(s%60).padStart(2,'0');
-    $('#nextIn').textContent = `${mm}:${ss}`;
-    if (s>0) requestAnimationFrame(step);
-  }
+  function step(){ const s=Math.max(0,Math.floor((nextTick-Date.now())/1000)); const mm=String(Math.floor(s/60)).padStart(2,'0'); const ss=String(s%60).padStart(2,'0'); $('#nextIn').textContent=`${mm}:${ss}`; if(s>0) requestAnimationFrame(step); }
   requestAnimationFrame(step);
 }
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible') startPolling(); else clearInterval(timer); });
 
-document.addEventListener('visibilitychange',()=>{
-  if(document.visibilityState==='visible') startPolling(); else clearInterval(timer);
-});
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.style.display='block'; clearTimeout(t._h); t._h=setTimeout(()=>t.style.display='none',2200); }
 
-// --- UX helpers ---
-function toast(msg){ const t=$('#toast'); t.textContent=msg; t.style.display='block'; clearTimeout(t._h); t._h=setTimeout(()=>t.style.display='none',2200) }
+$('#btnRefresh').addEventListener('click', ()=>{ nextTick=Date.now()+CONFIG.POLL_MS; listOrders(); tickCountdown(); });
+$('#btnSaveFilter').addEventListener('click', ()=>{ localStorage.setItem('tailorId',$('#tailorId').value.trim()); startPolling(); });
 
-// --- Controls ---
-$('#btnRefresh').addEventListener('click', ()=>{ nextTick = Date.now()+CONFIG.POLL_MS; listOrders(); tickCountdown(); });
-$('#btnSaveFilter').addEventListener('click', ()=>{ localStorage.setItem('tailorId', $('#tailorId').value.trim()); startPolling(); });
-
-// --- INIT ---
-(function init(){
-  buildBoard();
-  $('#tailorId').value = localStorage.getItem('tailorId')||'';
-  startPolling();
-})();
+/* init */
+(function(){ buildBoard(); $('#tailorId').value = localStorage.getItem('tailorId')||''; startPolling(); })();
 </script>
 </body>
 </html>
